@@ -117,13 +117,23 @@
      "The embedding model treated the professor's nickname as out-of-vocabulary and returned
      results from an unrelated review" is an explanation. -->
 
-**Question that failed:**
+**Question that failed:** "What path did people take to become a data engineer?"
 
-**What the system returned:**
+**What the system returned:** A chunk containing three different Reddit commenters' responses fused into a single block — an Art major career pivot, an Azure course recommendation, and a deleted reply. The overlap prefix ("that rare breed") was a dangling sentence fragment from the previous chunk with no standalone meaning. No single commenter's answer was complete, so the LLM had to synthesize across fragmented, unattributed voices.
 
-**Root cause (tied to a specific pipeline stage):**
+**Root cause (tied to a specific pipeline stage):** Chunking stage. The Reddit PDF is a printed thread where each commenter's response is a short paragraph separated by a username and timestamp. Because the chunker packs paragraphs greedily up to the token budget, multiple commenters' paragraphs (each ~40–60 tokens) get merged into one 179-token chunk. The chunker has no awareness that a username line signals a speaker change — it treats it as a normal paragraph boundary.
 
-**What you would change to fix it:**
+**What you would change to fix it:** Pre-process Reddit PDFs before ingestion: split the raw text on commenter header lines (username + timestamp pattern) so each comment becomes its own document. Feed those mini-documents through the chunker individually. This keeps each chunk to one voice and eliminates the attribution confusion at generation time.
+
+---
+
+**Question that failed:** "What APIs does Apache Spark provide?"
+
+**What the system returned:** A chunk that was purely a table-of-contents listing — a sequence of hyperlink slugs ("rdd-programming-guide.html", "sql-programming-guide.html") with one-line labels and no explanatory content. The chunk would rank highly in retrieval because it names every Spark API, but it cannot answer the question — it only points to where answers live.
+
+**Root cause (tied to a specific pipeline stage):** Ingestion + chunking stages. The Apache Spark PDF is a web-exported documentation page that includes a full "Where to Go from Here" navigation section. `pdfplumber` extracts this as regular text, and the chunker has no signal to distinguish navigation prose from substantive content. The result is a chunk that matches many queries but satisfies none of them.
+
+**What you would change to fix it:** Add a post-chunking filter that discards chunks where more than 40% of tokens match a URL/filepath pattern (`re.search(r'\.\w{2,5}\b', token)`). Alternatively, detect and strip navigation sections in `clean_text()` by recognizing header lines like "Where to Go from Here" followed by dense link lists.
 
 ---
 

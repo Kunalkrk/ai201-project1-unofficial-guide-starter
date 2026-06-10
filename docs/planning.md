@@ -38,13 +38,13 @@ This knowledge is difficult to find in one place because practical data engineer
 
 ## Chunking Strategy
 
-Most documents are medium-to-long articles, technical documentation pages, blog posts, and Reddit discussions, not short reviews. Because important explanations often span multiple paragraphs (e.g., descriptions of Spark, dbt, career advice, or data architecture), I would use chunks of 500 tokens with a 100-token overlap.
+Most documents are medium-to-long articles, technical documentation pages, blog posts, and Reddit discussions, not short reviews. Because important explanations often span multiple paragraphs (e.g., descriptions of Spark, dbt, career advice, or data architecture), I would use chunks of 200 tokens with a 50-token overlap.
 
-**Chunk size: 500**
+**Chunk size: 200**
 
-**Overlap: 100**
+**Overlap: 50**
 
-**Reasoning: The 500-token chunk size is large enough to preserve context around a complete idea, such as a section describing data pipelines or career progression, while still being small enough for precise retrieval. The 100-token overlap helps ensure that important information near chunk boundaries is not lost**
+**Reasoning: The 200-token chunk size is large enough to preserve context around a complete idea, such as a section describing data pipelines or career progression, while still being small enough for precise retrieval. The 50-token overlap helps ensure that important information near chunk boundaries is not lost**
 
 ---
 
@@ -109,8 +109,8 @@ Most documents are medium-to-long articles, technical documentation pages, blog 
 │ 2. Chunking                         │
 │                                      │
 │ Tool: Recursive text splitter       │
-│ Chunk size: ~500 tokens             │
-│ Overlap: ~100 tokens                │
+│ Chunk size: ~200 tokens             │
+│ Overlap: ~50 tokens                │
 └──────────────────────┬───────────────┘
                        │
                        ▼
@@ -164,7 +164,7 @@ Most documents are medium-to-long articles, technical documentation pages, blog 
      with my specified chunk size and overlap" is a plan. -->
 
 **Milestone 3 — Ingestion and chunking:**
-Prompt Claude with planning.md ingestion + chunking specs (PDF ingestion using pdfplumber, 500-token chunks, 100-token overlap) and ask it to implement a load_documents() and chunk_documents() pipeline that outputs clean text chunks with metadata.
+Prompt Claude with planning.md ingestion + chunking specs (PDF ingestion using pdfplumber, 200-token chunks, 50-token overlap) and ask it to implement a load_documents() and chunk_documents() pipeline that outputs clean text chunks with metadata.
 
 **Milestone 4 — Embedding and retrieval:**
 Provide Claude embedding + vector store design (sentence-transformers all-MiniLM-L6-v2 + ChromaDB + top-k=5) and ask it to generate code for embedding chunks, persisting them in Chroma, and implementing a retrieve(query) function using cosine similarity search.
