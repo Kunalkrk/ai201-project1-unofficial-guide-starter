@@ -38,32 +38,23 @@ This knowledge is difficult to find in one place because practical data engineer
 
 ## Chunking Strategy
 
-<!-- How will you split documents into chunks?
-     State your chunk size (in tokens or characters), overlap size, and explain why those
-     numbers fit the structure of your documents.
-     A review-heavy corpus warrants different chunking than a long FAQ. -->
+Most documents are medium-to-long articles, technical documentation pages, blog posts, and Reddit discussions, not short reviews. Because important explanations often span multiple paragraphs (e.g., descriptions of Spark, dbt, career advice, or data architecture), I would use chunks of 500 tokens with a 100-token overlap.
 
-**Chunk size:**
+**Chunk size: 500**
 
-**Overlap:**
+**Overlap: 100**
 
-**Reasoning:**
+**Reasoning: The 500-token chunk size is large enough to preserve context around a complete idea, such as a section describing data pipelines or career progression, while still being small enough for precise retrieval. The 100-token overlap helps ensure that important information near chunk boundaries is not lost**
 
 ---
 
 ## Retrieval Approach
 
-<!-- Which embedding model are you using (e.g., all-MiniLM-L6-v2 via sentence-transformers)?
-     How many chunks will you retrieve per query (top-k)?
-     If you were deploying this for real users and cost wasn't a constraint, what tradeoffs
-     would you weigh in choosing a different embedding model — context length, multilingual
-     support, accuracy on domain-specific text, latency? -->
+**Embedding model: all-MiniLM-L6-v2**
 
-**Embedding model:**
+**Top-k: top 5 chunks (top-k = 5) for each query**
 
-**Top-k:**
-
-**Production tradeoff reflection:**
+**Production tradeoff reflection:The main tradeoffs would be retrieval quality, context length, multilingual support, and latency. A larger model may better capture relationships between concepts such as data pipelines, Spark, ETL, and analytics engineering, but it would require more computational resources and increase response times.**
 
 ---
 
@@ -76,11 +67,11 @@ This knowledge is difficult to find in one place because practical data engineer
 
 | # | Question | Expected answer |
 |---|----------|-----------------|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
-| 5 | | |
+| 1 | Is there one data engineering roadmap? | No. Successful data engineers follow different paths and focus on core fundamentals. |
+| 2 | What skills should beginners learn first? | SQL, Python, databases, and data modeling. |
+| 3 | What is Apache Spark used for? | Large-scale distributed data processing and ETL. |
+| 4 | What is dbt used for? | Data transformation, testing, and documentation in data warehouses. |
+| 5 | What project is recommended for aspiring data engineers? | An end-to-end data pipeline using ingestion, transformation, and orchestration tools. |
 
 ---
 
@@ -90,9 +81,11 @@ This knowledge is difficult to find in one place because practical data engineer
      Consider: noisy or inconsistent documents, missing source attribution, off-topic
      retrieval, chunks that split key information across boundaries. -->
 
-1.
+1. Conflicting or inconsistent advice: Community sources such as Reddit may provide differing opinions on the best learning path, tools, or career advice. The system may retrieve contradictory information and generate an unclear answer.
 
-2.
+2. Chunk boundary issues: Important explanations may be split across two chunks. If only one chunk is retrieved, the answer could be incomplete or miss key context.
+
+3. Off-topic retrieval: A query about data engineering careers may retrieve chunks focused on machine learning platforms, data science, or software engineering because of overlapping terminology.
 
 ---
 
@@ -103,6 +96,58 @@ This knowledge is difficult to find in one place because practical data engineer
      Label each stage with the tool or library you're using.
      You can use ASCII art, a Mermaid diagram, or embed a sketch as an image.
      You'll use this diagram as context when prompting AI tools to implement each stage. -->
+
+┌──────────────────────────────────────┐
+│ 1. Document Ingestion               │
+│                                      │
+│ Tools: pdfplumber     │
+│ Sources: PDFs, blogs, Reddit, docs   │
+└──────────────────────┬───────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────┐
+│ 2. Chunking                         │
+│                                      │
+│ Tool: Recursive text splitter       │
+│ Chunk size: ~500 tokens             │
+│ Overlap: ~100 tokens                │
+└──────────────────────┬───────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────┐
+│ 3. Embedding Generation             │
+│                                      │
+│ Model: sentence-transformers        │
+│        all-MiniLM-L6-v2             │
+│ Runs locally                        │
+└──────────────────────┬───────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────┐
+│ 4. Vector Store                     │
+│                                      │
+│ DB: ChromaDB                        │
+│ Stores embeddings + metadata        │
+│ Local persistence                   │
+└──────────────────────┬───────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────┐
+│ 5. Retrieval                        │
+│                                      │
+│ Similarity search (cosine)          │
+│ Top-k = 5 chunks                    │
+│ Returns most relevant context       │
+└──────────────────────┬───────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────┐
+│ 6. Generation                       │
+│                                      │
+│ LLM: Groq API                      │
+│ Model: llama-3.3-70b-versatile     │
+│ Uses retrieved context + prompt     │
+└──────────────────────────────────────┘
 
 ---
 
@@ -119,7 +164,10 @@ This knowledge is difficult to find in one place because practical data engineer
      with my specified chunk size and overlap" is a plan. -->
 
 **Milestone 3 — Ingestion and chunking:**
+Prompt Claude with planning.md ingestion + chunking specs (PDF ingestion using pdfplumber, 500-token chunks, 100-token overlap) and ask it to implement a load_documents() and chunk_documents() pipeline that outputs clean text chunks with metadata.
 
 **Milestone 4 — Embedding and retrieval:**
+Provide Claude embedding + vector store design (sentence-transformers all-MiniLM-L6-v2 + ChromaDB + top-k=5) and ask it to generate code for embedding chunks, persisting them in Chroma, and implementing a retrieve(query) function using cosine similarity search.
 
 **Milestone 5 — Generation and interface:**
+Provide Claude my RAG architecture diagram + prompt requirements and ask it to build the Groq (llama-3.3-70b-versatile) query function that combines retrieved chunks into a structured prompt and returns a final response via a simple CLI or lightweight API endpoint.
