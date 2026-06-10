@@ -9,7 +9,9 @@
 
 ## Domain
 
-<!-- What domain did you choose? Why is this knowledge valuable and hard to find through official channels? -->
+The Data Engineering Career Guide domain focuses on helping aspiring and early-career data engineers understand the skills, tools, career paths, projects, and real-world responsibilities involved in the field. It combines community experiences, learning roadmaps, technical documentation, and engineering case studies from major technology companies.
+
+This knowledge is difficult to find in one place because practical data engineering advice is scattered across Reddit discussions, personal blogs, vendor documentation, and engineering blogs. Beginners often struggle to distinguish foundational skills from specific tools, making it valuable to aggregate perspectives from both industry practitioners and official technical resources.
 
 ---
 
@@ -20,16 +22,17 @@
 
 | # | Source | Description | URL or location |
 |---|--------|-------------|-----------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 6 | | | |
-| 7 | | | |
-| 8 | | | |
-| 9 | | | |
-| 10 | | | |
+| 1 | Alasdairb | Career Development & Learning Strategy | https://alasdairb.com/posts/there-is-no-data-engineering-roadmap |
+| 2 | Reddit | Career Paths & Industry Experiences | https://www.reddit.com/r/dataengineering/comments/1ibkmlj/what_path_did_you_take_to_become_a_data_engineer/ |
+| 3 | Reddit | Skills Roadmaps & Interview Preparation | https://www.reddit.com/r/dataengineer/comments/1qe7od5/the_roadmap_to_becoming_a_data_engineer_in_2026/ |
+| 4 | Dataquest | Beginner Learning Roadmap | https://www.dataquest.io/blog/the-data-engineer-roadmap-for-beginners/ |
+| 5 | Datadriven | Technical Skills & Career Roadmaps | https://datadriven.io/data-engineer-roadmap |
+| 6 | Uber | Data Architecture & Large-Scale Systems | https://www.uber.com/us/en/blog/database-federation/ |
+| 7 | Datatalks | Learning Resources & Portfolio Projects | https://datatalks.club/blog/data-engineering-zoomcamp.html |
+| 8 | DBT | Data Transformation & Analytics Engineering | https://docs.getdbt.com/docs/introduction |
+| 9 | Apache | Big Data Processing & Distributed Computing | https://spark.apache.org/docs/latest/index.html |
+| 10 | Netflix | Data Pipelines & Data Infrastructure | https://netflixtechblog.com/evolution-of-the-netflix-data-pipeline-da246ca36905 |
+| 11 | Uber | Data Platforms & Machine Learning Infrastructure | https://www.uber.com/us/en/blog/michelangelo-machine-learning-platform/ |
 
 ---
 
